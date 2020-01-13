@@ -9,6 +9,25 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.post("/api/users", (req, res) => {
+  const newUser = req.body;
+  insert(newUser)
+    .then(data => {
+      if (newUser.name && newUser.bio) {
+        res.status(201).json(data);
+      } else {
+        res
+          .status(400)
+          .json({ errorMessage: "Please provide name and bio for the user." });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({
+        errorMessage: "There was an error while saving the user to the database"
+      });
+    });
+});
+
 app.get("/api/users", (req, res) => {
   find()
     .then(users => {
